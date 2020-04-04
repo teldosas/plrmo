@@ -23,9 +23,11 @@ io.on('connection', socket => {
 
   const roleProperties = {
     SecretMurderer: {
-      title: "Κρυφός Δολοφόνος",
+      title: 'Κρυφός Δολοφόνος',
+      knownBy: ['KnownMurderer', 'BigBoss', 'SecretMurderer']
     }, KnownMurderer: {
       title:'Φανερός Δολοφόνος',
+      knownBy: ['Detective', 'SecretMurderer', 'BigBoss', 'KnownMurderer']
     }, Detective: {
       title: 'Ντετέκτιβ',
     }, Healer: {

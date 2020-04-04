@@ -7,8 +7,20 @@ require('bootstrap-input-spinner');
 var socket = io();
 var numOfPlayers;
 
-socket.on('roles', (roleImg) => {
-  $('#role').html($('<img>').attr('src', roleImg).css('height', '45vh'));
+socket.on('deal', (hand) => {
+  if (hand.error) {
+    $('#role').html(hand.error);
+    return;
+  }
+  $('#role').html($('<img>').
+    attr('src', hand.role.img).
+    attr('alt', hand.role.title)).
+    removeClass('col-12').
+    addClass('col-6');
+
+  $('#power').html($('<img>').
+    attr('src', hand.power.img)).
+    addClass('col-6');
 });
 
 socket.on('players-change', (msg) => {

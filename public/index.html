@@ -11,16 +11,21 @@
       form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
       #role { list-style-type: none; margin: 0; padding: 0; align-items: center;}
       #role li:nth-child(odd) { background: #666; }*/
-      #role { padding: 5px 10px; font-size: 10vh;}
+      #role {font-size: 10vh; padding-right: 0}
+      #role img {height: 45vh; max-width: 45vw; float: right;}
+      #power img {height: 45vh; max-width: 45vw;}
     </style>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   </head>
   <body class="bg-dark text-light">
     <div class="bg-dark sticky-top" style="height:50vh;" >
       <span id=numOfPlayers class="align-top" style="font-size: 3vh"></span>
-      <div id="role" class="text-center">Αναμονή για μοίρασμα...</div>
+      <div class="row">
+        <div id="role" class="col-12 text-center">Αναμονή για μοίρασμα...</div>
+        <div id="power"></div>
+      </div>
     </div>
-    <div class="container" style="overflow:scroll;">
+    <div class="container">
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6">

@@ -7,8 +7,8 @@ require('bootstrap-input-spinner');
 var socket = io();
 var numOfPlayers;
 
-socket.on('roles', (msg) => {
-  document.querySelector('#role').innerHTML = msg;
+socket.on('roles', (roleImg) => {
+  $('#role').html($('<img>').attr('src', roleImg).css('height', '45vh'));
 });
 
 socket.on('players-change', (msg) => {

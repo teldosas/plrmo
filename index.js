@@ -21,9 +21,25 @@ io.on('connection', socket => {
     io.emit('num-change', msg);
   });
 
+  const roleProperties = {
+    SecretMurderer: {
+      title: "Κρυφός Δολοφόνος",
+    }, KnownMurderer: {
+      title:'Φανερός Δολοφόνος',
+    }, Detective: {
+      title: 'Ντετέκτιβ',
+    }, Healer: {
+      title: 'EKAB',
+    }, BigBoss: {
+      title: 'Μεγάλο Αφεντικό',
+    }, Citizen: {
+      title: 'Πολίτης',
+    },
+  }
+
   socket.on('deal', ({numOfSecretMurderers, numOfKnownMurderers, numOfDetectives, numOfHealers, numOfBigBosses}) => {
     const nums = [numOfSecretMurderers, numOfKnownMurderers, numOfDetectives, numOfHealers, numOfBigBosses];
-    const roleNames = ['Κρυφός Δολοφόνος', 'Φανερός Δολοφόνος', 'Ντετέκτιβ', 'EKAB', 'Μεγάλο Αφεντικό', 'Πολίτης'];
+    const roles = ['SecretMurderer', 'KnownMurderer', 'Detective', 'Healer', 'BigBoss', 'Citizen'];
     const socketIds = Object.keys(io.sockets.sockets);
     const numOfSpecialRoles = nums.reduce((sum, n) => sum + n, 0);
     const numOfCitizens = socketIds.length - numOfSpecialRoles;
@@ -35,14 +51,16 @@ io.on('connection', socket => {
 
     nums.push(numOfCitizens);
 
-    const roles = [];
-    roleNames.forEach((role, i) => {
-      Array.prototype.push.apply(roles, Array(nums[i]).fill(role));
+    const rolesToDeal = [];
+    roles.forEach((role, i) => {
+      Array.prototype.push.apply(rolesToDeal, Array(nums[i]).fill(role));
     });
 
-    const shuffledRoles = _.shuffle(roles);
+    const shuffledRoles = _.shuffle(rolesToDeal);
     _.shuffle(socketIds).forEach((socketId, i) => {
-      io.to(socketId).emit('roles', shuffledRoles[i]);
+      const role = shuffledRoles[i];
+      const roleImg = `/images/roles/${role}.png`
+      io.to(socketId).emit('roles', roleImg);
     });
   });
 

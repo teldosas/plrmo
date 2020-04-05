@@ -3,22 +3,28 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const _ = require('underscore');
+const shortid = require('shortid')
 
 app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + 'public/index.html');
+app.get('/new', (req, res) => {
+  res.redirect(`/${shortid.generate()}`)
 });
 
-io.on('connection', socket => {
-  const numOfPlayers = Object.keys(io.sockets.sockets).length;
-  console.log('a user connected ' + numOfPlayers);
+app.get('/:gameId', (req, res) => {
+  res.sendFile(__dirname + '/public/game.html');
+});
 
-  io.emit('players-change', numOfPlayers);
+io.of(/^\/[A-Za-z0-9-_]+$/).on('connection', socket => {
+  const nsp = socket.nsp;
+  const numOfPlayers = Object.keys(nsp.sockets).length;
+  console.log(`${nsp.name}:a user connected ` + numOfPlayers);
 
-  socket.on('num-change', msg => {
+  nsp.emit('players-change', numOfPlayers);
+
+  nsp.on('num-change', msg => {
     // WARNING!!! XSS vulnerability
-    io.emit('num-change', msg);
+    nsp.emit('num-change', msg);
   });
 
   const roleProps = {
@@ -46,12 +52,12 @@ io.on('connection', socket => {
       'TheHiddenAssistant', 'TheKey', 'TheMayor', 'TheParaphernalia', 'ThePhone', 'ThePhonecall',
       'TheProof', 'TheTrip', 'TheWill', 'TheX-Agent'
     ]
-    const socketIds = Object.keys(io.sockets.sockets);
+    const socketIds = Object.keys(nsp.sockets);
     const numOfSpecialRoles = nums.reduce((sum, n) => sum + n, 0);
     const numOfCitizens = socketIds.length - numOfSpecialRoles;
 
     if (numOfCitizens < 0) {
-      io.emit('deal', { error: '!!! Πολλοι ρόλοι' });
+      nsp.emit('deal', { error: '!!! Πολλοι ρόλοι' });
       return;
     }
 
@@ -75,14 +81,14 @@ io.on('connection', socket => {
           img: `/images/powers/${power}.png`
         }
       }
-      io.to(socketId).emit('deal', hand);
+      nsp.to(socketId).emit('deal', hand);
     });
   });
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
-      const numOfPlayers = Object.keys(io.sockets.sockets).length;
-      io.emit('players-change', numOfPlayers);
+      const numOfPlayers = Object.keys(nsp.sockets).length;
+      nsp.emit('players-change', numOfPlayers);
   });
 });
 

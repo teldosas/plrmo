@@ -4,7 +4,7 @@ const _ = require('underscore');
 global.jQuery = $;
 require('bootstrap-input-spinner');
 
-var socket = io();
+var socket = io(location.pathname);
 var numOfPlayers;
 
 socket.on('deal', (hand) => {
@@ -46,7 +46,6 @@ socket.on('num-change', (msg) => {
   $(`#${msg[0]}`).val(msg[1]);
 });
 
-var callBackId;
 $('input[type=number]').change(e => {
   const numOfRoles = _.values(getNums()).reduce((acc, e) => acc+e, 0);
   const diff = numOfPlayers - numOfRoles
@@ -54,6 +53,6 @@ $('input[type=number]').change(e => {
     $(e.target).val(parseInt(e.target.value) + diff);
     return;
   }
-  clearTimeout(callBackId);
+  
   socket.emit('num-change', [e.target.getAttribute('id'), e.target.value])
-})
+});

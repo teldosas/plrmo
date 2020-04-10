@@ -7,6 +7,8 @@ require('bootstrap-input-spinner');
 var socket = io(location.pathname);
 var numOfPlayers;
 
+$('#leak input').focus();
+
 socket.on('deal', (hand) => {
   $('#leakedNames').html('');
   if (hand.error) {
@@ -24,15 +26,8 @@ socket.on('deal', (hand) => {
     addClass('col-6');
 
   if (hand.role.leakName) {
-    $('#leak').fadeIn(2000);
-  } else {
-    $('#leak').hide();
+    socket.emit('leak', $('#leak input').val());
   }
-});
-
-$('form#leak').submit(e => {
-  e.preventDefault();
-  socket.emit('leak', $('#leak input').val());
   $('#leak').fadeOut(1000);
 });
 
@@ -45,7 +40,7 @@ socket.on('leak', ({title, name, evil}) => {
   const interval = setInterval(() => leakDiv.children('div').text(timeLeft--), 1000)
   setTimeout(() => {
     clearInterval(interval);
-    leakDiv.fadeOut(2000);
+    leakDiv.fadeOut(2000, () => leakDiv.remove());
   }, time * 1000);
 });
 

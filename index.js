@@ -50,7 +50,7 @@ io.of(/^\/[A-Za-z0-9-_]+$/).on('connection', socket => {
       title: 'EKAB',
     }, BigBoss: {
       title: 'Μεγάλο Αφεντικό',
-      knownBy: ['TheX-Agent'],
+      knownByPower: ['TheX-Agent'],
       evil: true,
     }, Citizen: {
       title: 'Πολίτης',
@@ -86,11 +86,14 @@ io.of(/^\/[A-Za-z0-9-_]+$/).on('connection', socket => {
     _.shuffle(socketIds).forEach((socketId, i) => {
       const role = shuffledRoles[i];
       const power = shuffledPowers[i];
+      const numOfKnownBy = _.chain(roles).object(nums).
+        pick(roleProps[role].knownBy).values().
+        reduce((acc, n) => acc+n, 0).value();
       const hand = {
         role: {
           img: `/images/roles/${role}.png`,
           title: roleProps[role].title,
-          leakName: !!roleProps[role].knownBy
+          leakName: numOfKnownBy > 1 || !!roleProps[role].knownByPower
         }, power: {
           img: `/images/powers/${power}.png`
         }
@@ -103,12 +106,13 @@ io.of(/^\/[A-Za-z0-9-_]+$/).on('connection', socket => {
   socket.on('leak', name => {
     const socketRoleMap = state.socketRoleMap;
     const role = socketRoleMap[socket.id].role;
-    const knownBy = roleProps[role].knownBy;
+    const knownBy = roleProps[role].knownBy || [];
+    const knownByPower = roleProps[role].knownByPower || [];
 
     const recipients = _.chain(socketRoleMap).
       omit(socket.id).
       pick(({role, power}) => {
-        return knownBy.includes(role) || knownBy.includes(power);
+        return knownBy.includes(role) || knownByPower.includes(power);
       }).keys().value();
 
     const {title, evil} = roleProps[role];

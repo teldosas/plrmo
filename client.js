@@ -37,7 +37,7 @@ $('form#leak').submit(e => {
 });
 
 socket.on('leak', ({title, name, evil}) => {
-  const time = 10;
+  const time = 20;
   var timeLeft = time;
   const html = `<strong>${title}:</strong> ${name} <div class="float-right">${timeLeft--}</div>`;
   const leakDiv = $('<div>').html(html).addClass(`alert alert-${evil?'danger':'success'}`)

@@ -8,6 +8,7 @@ var socket = io(location.pathname);
 var numOfPlayers;
 
 socket.on('deal', (hand) => {
+  $('#leakedNames').html('');
   if (hand.error) {
     $('#role').html(hand.error);
     return;
@@ -21,6 +22,31 @@ socket.on('deal', (hand) => {
   $('#power').html($('<img>').
     attr('src', hand.power.img)).
     addClass('col-6');
+
+  if (hand.role.leakName) {
+    $('#leak').fadeIn(2000);
+  } else {
+    $('#leak').hide();
+  }
+});
+
+$('form#leak').submit(e => {
+  e.preventDefault();
+  socket.emit('leak', $('#leak input').val());
+  $('#leak').fadeOut(1000);
+});
+
+socket.on('leak', ({title, name, evil}) => {
+  const time = 10;
+  var timeLeft = time;
+  const html = `<strong>${title}:</strong> ${name} <div class="float-right">${timeLeft--}</div>`;
+  const leakDiv = $('<div>').html(html).addClass(`alert alert-${evil?'danger':'success'}`)
+  $('#leakedNames').append(leakDiv);
+  const interval = setInterval(() => leakDiv.children('div').text(timeLeft--), 1000)
+  setTimeout(() => {
+    clearInterval(interval);
+    leakDiv.fadeOut(2000);
+  }, time * 1000);
 });
 
 socket.on('players-change', (msg) => {
@@ -37,7 +63,7 @@ const getNums = () => {
   return nums;
 }
 
-$('form').submit(e => {
+$('form#deal').submit(e => {
   e.preventDefault();
   socket.emit('deal', getNums());
 });
@@ -53,6 +79,6 @@ $('input[type=number]').change(e => {
     $(e.target).val(parseInt(e.target.value) + diff);
     return;
   }
-  
+
   socket.emit('num-change', [e.target.getAttribute('id'), e.target.value])
 });

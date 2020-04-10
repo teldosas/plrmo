@@ -12,24 +12,35 @@
       #role { list-style-type: none; margin: 0; padding: 0; align-items: center;}
       #role li:nth-child(odd) { background: #666; }*/
       #role {font-size: 10vh; padding-right: 0}
-      #role img {height: 45vh; max-width: 45vw; float: right;}
-      #power img {height: 45vh; max-width: 45vw;}
+      #role img {height: 40vh; max-width: 45vw; float: right;}
+      #power img {height: 40vh; max-width: 45vw;}
     </style>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   </head>
   <body class="bg-dark text-light">
-    <div class="bg-dark sticky-top" style="height:50vh;" >
+    <div class="bg-dark sticky-top" style="min-height:50vh;" >
       <span id=numOfPlayers class="align-top" style="font-size: 3vh"></span>
       <div class="row">
         <div id="role" class="col-12 text-center">Αναμονή για μοίρασμα...</div>
         <div id="power"></div>
+      </div>
+      <div id="leak" class="row" style="display:none">
+        <form id="leak" class="input-group mb-3 offset-lg-4 col-lg-4 col-sm-12">
+          <input type="text" class="form-control" placeholder="Γράψε το όνομά σου! Είναι απολύτως εμπιστευτιικό...">
+          <div class="input-group-append">
+            <input type="submit" class="btn btn-outline-secondary" value="Αποστολή">
+          </div>
+        </form>
+      </div>
+      <div class="row">
+        <div id="leakedNames" class="offset-lg-4 col-lg-4 col-sm-12"></div>
       </div>
     </div>
     <div class="container">
       <div class="row">
         <div class="col-3"></div>
         <div class="col-6">
-          <form>
+          <form id="deal">
             <div class="form-group">
               <label class="form-check-label" for="numOfSecretMurderers">Κρυφοί Κλέφτες:</label>
               <input type="number" id="numOfSecretMurderers" name="numOfSecretMurderers" step="1" min="0" value="1">

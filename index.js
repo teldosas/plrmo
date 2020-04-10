@@ -36,11 +36,11 @@ io.of(/^\/[A-Za-z0-9-_]+$/).on('connection', socket => {
 
   const roleProps = {
     SecretMurderer: {
-      title: 'Κρυφός Δολοφόνος',
+      title: 'Κρυφός Κλέφτης',
       knownBy: ['KnownMurderer', 'BigBoss', 'SecretMurderer'],
       evil: true,
     }, KnownMurderer: {
-      title:'Φανερός Δολοφόνος',
+      title:'Φανερός Κλέφτης',
       knownBy: ['Detective', 'SecretMurderer', 'BigBoss', 'KnownMurderer'],
       evil: true,
     }, Detective: {

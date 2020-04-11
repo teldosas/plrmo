@@ -4,12 +4,13 @@ const _ = require('underscore');
 global.jQuery = $;
 require('bootstrap-input-spinner');
 
-var socket = io(location.pathname);
+const gameId = location.pathname;
+const socket = io(gameId);
 var numOfPlayers;
 
 $('#leak input').focus();
 
-socket.on('deal', (hand) => {
+const handHandler = (hand, leakName = true) => {
   $('#leakedNames').html('');
   if (hand.error) {
     $('#role').html(hand.error);
@@ -25,11 +26,20 @@ socket.on('deal', (hand) => {
     attr('src', hand.power.img)).
     addClass('col-6');
 
-  if (hand.role.leakName) {
+  if (hand.role.leakName && leakName) {
     socket.emit('leak', $('#leak input').val());
   }
   $('#leak').fadeOut(1000);
-});
+
+  localStorage.clear();
+  localStorage.setItem('hand' + gameId, JSON.stringify(hand));
+}
+
+const storedHand = localStorage.getItem('hand' + gameId);
+if (storedHand) {
+  handHandler(JSON.parse(storedHand), leakName = false);
+}
+socket.on('deal', handHandler);
 
 socket.on('leak', ({title, name, evil}) => {
   const time = 20;

@@ -59,10 +59,10 @@ io.of(/^\/[A-Za-z0-9-_]+$/).on('connection', socket => {
   socket.on('deal', ({numOfSecretMurderers, numOfKnownMurderers, numOfDetectives, numOfHealers, numOfBigBosses}) => {
     const nums = [numOfSecretMurderers, numOfKnownMurderers, numOfDetectives, numOfHealers, numOfBigBosses];
     const roles = ['SecretMurderer', 'KnownMurderer', 'Detective', 'Healer', 'BigBoss', 'Citizen'];
-    const powers = [
-      'DoubleVote', 'Helmet',  'Indecisive',  'TheAmbassador', 'TheBarber', 'TheDetectiveLens',
-      'TheHiddenAssistant', 'TheKey', 'TheMayor', 'TheParaphernalia', 'ThePhone', 'ThePhonecall',
-      'TheProof', 'TheTrip', 'TheWill', 'TheX-Agent'
+    const powersOrderedByImportance = [
+      'Helmet', 'TheDetectiveLens', 'TheDoctor', 'TheMayor', 'TheBarber', 'Indecisive', 'TheTrip',
+      'TheComeback', 'TheX-Agent', 'DoubleVote', 'ThePhonecall', 'TheAmbassador', 'TheWill', 'TheKey',
+      'TheParaphernalia', 'TheProof', 'TheFingerprint', 'ThePhone', 'TheHiddenAssistant', 'TheWarrant'
     ];
     const socketIds = Object.keys(nsp.sockets);
     const numOfSpecialRoles = nums.reduce((sum, n) => sum + n, 0);
@@ -80,8 +80,10 @@ io.of(/^\/[A-Za-z0-9-_]+$/).on('connection', socket => {
       Array.prototype.push.apply(rolesToDeal, Array(nums[i]).fill(role));
     });
 
+    const powersToDeal = _.take(powersOrderedByImportance, socketIds.length);
+
     const shuffledRoles = _.shuffle(rolesToDeal);
-    const shuffledPowers = _.shuffle(powers);
+    const shuffledPowers = _.shuffle(powersToDeal);
     const socketRoleMap = state.socketRoleMap = {};
     _.shuffle(socketIds).forEach((socketId, i) => {
       const role = shuffledRoles[i];

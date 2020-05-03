@@ -85,7 +85,7 @@ io.of(/^\/[A-Za-z0-9-_]+$/).on('connection', socket => {
     const shuffledRoles = _.shuffle(rolesToDeal);
     const shuffledPowers = _.shuffle(powersToDeal);
     const socketRoleMap = state.socketRoleMap = {};
-    _.shuffle(socketIds).forEach((socketId, i) => {
+    socketIds.forEach((socketId, i) => {
       const role = shuffledRoles[i];
       const power = shuffledPowers[i];
       const numOfKnownBy = _.chain(roles).object(nums).

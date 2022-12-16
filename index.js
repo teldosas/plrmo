@@ -5,6 +5,8 @@ const io = require('socket.io')(http);
 const _ = require('underscore');
 const shortid = require('shortid');
 
+const port = process.env.PORT || '3000'
+
 const stateStore = new WeakMap();
 
 app.use(express.static('public'));
@@ -130,6 +132,6 @@ io.of(/^\/[A-Za-z0-9-_]+$/).on('connection', socket => {
   });
 });
 
-http.listen(process.env.PORT || 3000, () => {
-  console.log('listening on *:3000');
+http.listen(port, () => {
+  console.log('listening on *:' + port);
 });
